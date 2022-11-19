@@ -1,1 +1,2 @@
-cat /sys/class/thermal/thermal_zone0/temp
+temp=$(cat /sys/class/thermal/thermal_zone0/temp)
+temp="$(expr $temp / 1000)度"
