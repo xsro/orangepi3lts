@@ -1,0 +1,10 @@
+[Unit]
+Description=aria2c Service
+After=network.target
+Wants=network.target
+[Service]
+Type=simple
+ExecStart=/usr/bin/aria2c --conf-path=/home/orangepi/www/aria2.conf
+Restart=on-abnormal
+[Install]
+WantedBy=multi-user.target
