@@ -1,2 +1,1 @@
-* 0 * * * cd /home/orangepi/www/drfzh.github.io & git pull
 * */18 * * * sh /home/orangepi/.clash-update.sh >>/home/orangepi/.clash-update.log
