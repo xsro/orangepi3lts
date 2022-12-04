@@ -5,9 +5,15 @@
 <meta charset="utf-8">
 <style>
     body {
-        width: 35em;
+        width: 80%;
         margin: 0 auto;
         font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+    h2{
+        color: #005826
+    }
+    b {
+        color: #087236
     }
 </style>
 </head>
@@ -26,11 +32,11 @@
 <h2>代理与路由服务</h2>
 
 <ol>
-	<li>7890:http proxy service</li>
-	<li>7891:socks proxy service</li>
-	<li>7892:redir service</li>
-	<li>7893:mixed http+socks services</li>
-	<li>7894:http proxy service by tinyproxy. if you have some network problem, you can link to this proxy. This proxy has no extra work with the connection</li>
+	<li><b>192.168.31.2:7890</b>: http proxy service</li>
+	<li><b>192.168.31.2:7891</b>: socks proxy service</li>
+	<li><b>192.168.31.2:7892</b>: redir service</li>
+	<li><b>192.168.31.2:7893</b>: mixed http+socks services</li>
+	<li><b>192.168.31.2:7894</b>: http proxy service by tinyproxy. if you have some network problem, you can link to this proxy. This proxy has no extra work with the connection</li>
 </ol>
 
 <h2>网站服务</h2>
@@ -71,25 +77,32 @@
     
     let inner=""
     for(const s of services){
-        let link="";
+        let ipurl=undefined;
+        let iplink="";
         if (s.port){
-            link="http://192.168.31.2:"+s.port
+            ipurl=new URL("http://192.168.31.2")
+            ipurl.port=s.port
             if (s.path){
-                link+=s.path;
+                ipurl.pathname=s.path
             }
         }
-        if(link.length>0){
-            link=`<a href="${link}">${link}</a>`
+        if(ipurl){
+            iplink=`<a href="${ipurl}">${ipurl.host}</a>`
         }
+        let url=new URL(s.url);
+        let link="";
+        if(s.path){
+            url.pathname=s.path;
+        }
+        link=`<a href="${url}">${url.host}</a>`
+        
         inner+=`
-        <li>${s.description}: <a href="${s.url}">${s.url}</a> ${link}</li>
+        <li><b>${s.description}</b>:  ${link}  ${iplink}</li>
         `
     }
     const ele=document.getElementById("web")
     ele.innerHTML=`<ol>${inner}</ol>`
-
 </script>
-
 <footer>
     <p>This website is powered by nginx, For online documentation and support please refer to
     <a href="http://nginx.org/">nginx.org</a>.<br/>
