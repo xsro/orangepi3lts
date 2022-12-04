@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
-<title>Welcome to nginx!</title>
+<title>Networks&Control</title>
+<meta charset="utf-8">
 <style>
     body {
         width: 35em;
@@ -12,11 +13,17 @@
 </head>
 <body>
 
-<h1>Welcome to Our GROUP!</h1>
+<h1>欢迎</h1>
 
 <p>We are a research group lead by dr <a href="https://drfzh.github.io/">Fan Zhang</a> in <a href="https://saa.sysu.edu.cn/">SYSU</a></p>
 
-<p>We provide some services here for inner network.</p>
+<p>
+    该内部网络中部署了一些服务，可以通过域名或者ip访问。
+    如果想通过ip访问请连接该内网wifi，如果想使用域名访问需要在连接wifi的基础上设置代理或者设置路由器ip为手动。
+    如果没有设置代理或者旁路由，将无法访问外网。
+</p>
+
+<h2>代理与路由服务</h2>
 
 <ol>
 	<li>7890:http proxy service</li>
@@ -24,20 +31,64 @@
 	<li>7892:redir service</li>
 	<li>7893:mixed http+socks services</li>
 	<li>7894:http proxy service by tinyproxy. if you have some network problem, you can link to this proxy. This proxy has no extra work with the connection</li>
-    <li>8082:calibre services</li>
-    <li>8083:calibre web services</li>
-    <li>8084:file service</li>
 </ol>
 
-<p>Under our proxy or redir, you can also visit services with following link</p>
+<h2>网站服务</h2>
 
-<ol>
-	<li><a href="http://nw.co">home page</a></li>
-	<li><a href="http://clash.nw.co">clash controller</a> <a href="http://clash.nw.co/ui">clash dashboard</a> <a href="http://clash.nw.co/ui/yacd">yacd</a></li>
-	<li><a href="http://bk.nw.co">carlibre server</a></li>
-	<li><a href="http://book.nw.co">carlibre web</a> user:co password:co</li>
-	<li><a href="http://file.nw.co">file service</a></li>
-</ol>
+<div id="web"></div>
+<script>
+    const services=[
+        {
+            url:"http://nw.co",
+            port:"80",
+            description:"home page hosted by nginx"
+        },{
+            url:"http://clash.nw.co",
+            port:"9090",path:"/ui",
+            description:"clash dashboard 代理服务管理界面"
+        },{
+            url:"http://clash.nw.co",
+            port:"9090",path:"ui/yacd",
+            description:"yet another clash dashboard 代理服务管理界面"
+        },{
+            url:"http://nw.co",
+            port:"80",path:"/aria2ng",
+            description:"aria2ng aria2下载器管理界面"
+        },{
+            url:"http://files.nw.co",
+            description:"aria2下载器下载的文件"
+        },{
+            url:"http://book.nw.co",
+            port:"8083",
+            description:"calibre web 电子书库 账号与密码均为co"
+        },{
+            url:"http://book.nw.co",
+            port:"8083",path:"/category/stored/54",
+            description:"calibre web 控制相关书籍"
+        }
+        
+    ];
+    
+    let inner=""
+    for(const s of services){
+        let link="";
+        if (s.port){
+            link="http://192.168.31.2:"+s.port
+            if (s.path){
+                link+=s.path;
+            }
+        }
+        if(link.length>0){
+            link=`<a href="${link}">${link}</a>`
+        }
+        inner+=`
+        <li>${s.description}: <a href="${s.url}">${s.url}</a> ${link}</li>
+        `
+    }
+    const ele=document.getElementById("web")
+    ele.innerHTML=`<ol>${inner}</ol>`
+
+</script>
 
 <footer>
     <p>This website is powered by nginx, For online documentation and support please refer to
