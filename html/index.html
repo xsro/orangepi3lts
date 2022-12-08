@@ -15,6 +15,9 @@
     b {
         color: #087236
     }
+    em {
+        color:#740003
+    }
 </style>
 <script src="static/showdown.min.js"></script>
 </head>
@@ -40,11 +43,16 @@
 	<li><b>192.168.31.2:7892</b>: redir service</li>
 	<li><b>192.168.31.2:7893</b>: mixed http+socks services</li>
 	<li><b>192.168.31.2:7894</b>: http proxy service by tinyproxy. if you have some network problem, you can link to this proxy. This proxy has no extra work with the connection</li>
+    <li><b>192.168.31.2:4000</b>: nomachine 远程桌面登录服务</li>
 </ol>
+
+<p>同时使用花生壳也进行了内网穿透，可以使用命令<b>ssh  -L 7891:localhost:7893 orangepi@6p0024h666.goho.co -p 53748</b>远程登录</p>
 
 <h2>网站服务</h2>
 
 <div id="web"></div>
+<input id="web-ip" type="checkbox">
+<label for="web-ip">显示ip地址</label>
 
 <h2>fan of Dr Fan</h2>
 
@@ -72,11 +80,11 @@
         },{
             url:"http://clash.nw.co",
             port:"9090",path:"/ui",
-            description:"clash dashboard 代理服务管理界面"
+            description:"clash dashboard 代理服务管理界面，<em>在这里可以看到接入局域网的所有网络活动</em>"
         },{
             url:"http://clash.nw.co",
             port:"9090",path:"ui/yacd",
-            description:"yet another clash dashboard 代理服务管理界面"
+            description:"yet another clash dashboard 代理服务管理界面，<em>在这里可以看到接入局域网的所有网络活动</em>"
         },{
             url:"http://nw.co",
             port:"80",path:"/aria2ng",
@@ -96,33 +104,41 @@
         
     ];
     
-    let inner=""
-    for(const s of services){
-        let ipurl=undefined;
-        let iplink="";
-        if (s.port){
-            ipurl=new URL("http://192.168.31.2")
-            ipurl.port=s.port
-            if (s.path){
-                ipurl.pathname=s.path
+    function render_web_services(useIP){
+        let inner=""
+        for(const s of services){
+            let ipurl=undefined;
+            let iplink="";
+            if (s.port){
+                ipurl=new URL("http://192.168.31.2")
+                ipurl.port=s.port
+                if (s.path){
+                    ipurl.pathname=s.path
+                }
             }
+            if(ipurl){
+                iplink=`<a href="${ipurl}">${ipurl.host+ipurl.pathname}</a>`
+            }
+            let url=new URL(s.url);
+            let link="";
+            if(s.path){
+                url.pathname=s.path;
+            }
+            link=`<a href="${url}">${url.host+url.pathname}</a>`
+            
+            inner+=`
+            <li>${link}  ${useIP?iplink:""}：${s.description}</li>
+            `
         }
-        if(ipurl){
-            iplink=`<a href="${ipurl}">${ipurl.host}</a>`
-        }
-        let url=new URL(s.url);
-        let link="";
-        if(s.path){
-            url.pathname=s.path;
-        }
-        link=`<a href="${url}">${url.host}</a>`
-        
-        inner+=`
-        <li><b>${s.description}</b>:  ${link}  ${iplink}</li>
-        `
+        const ele=document.getElementById("web")
+        ele.innerHTML=`<ol>${inner}</ol>`
+        return `<ol>${inner}</ol>`
     }
-    const ele=document.getElementById("web")
-    ele.innerHTML=`<ol>${inner}</ol>`
+    const ele=document.getElementById("web-ip")
+    ele.addEventListener("input",e=>{
+        render_web_services(e.target.checked) 
+    })
+    render_web_services(ele.checked) 
 </script>
 <footer>
     <p>This website is powered by nginx, For online documentation and support please refer to

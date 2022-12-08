@@ -1,1 +1,1 @@
-* */1 * * * sh /home/orangepi/www/keepnet.sh
+* 5 * * * bash /home/orangepi/www/web-reload.sh d
