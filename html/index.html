@@ -16,12 +16,15 @@
         color: #087236
     }
 </style>
+<script src="static/showdown.min.js"></script>
 </head>
 <body>
 
-<h1>欢迎</h1>
+<h1>我们一起做大!做强!</h1>
 
 <p>We are a research group lead by dr <a href="https://drfzh.github.io/">Fan Zhang</a> in <a href="https://saa.sysu.edu.cn/">SYSU</a></p>
+
+
 
 <p>
     该内部网络中部署了一些服务，可以通过域名或者ip访问。
@@ -42,6 +45,24 @@
 <h2>网站服务</h2>
 
 <div id="web"></div>
+
+<h2>fan of Dr Fan</h2>
+
+<img src="img/航院最好.png">
+
+<br>
+<div id="fan"></div>
+<script>
+    (async ()=>{
+        const r=await fetch("/static/fan.md");
+        const md=await r.text()
+        const text=md.split("<span class='anchor' id='about-me'></span>")[1].replace(/# /g,"## ")
+        const converter = new showdown.Converter();
+        const html = converter.makeHtml(text);
+        document.getElementById("fan").innerHTML=html
+    })()
+</script>
+
 <script>
     const services=[
         {
